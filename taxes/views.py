@@ -34,6 +34,7 @@ class TaxView(APIView):
 
             return Response({'total_tax': Tax.calculate_total_tax(salary)})
 
+
 def upload_file(request):
     res = 0
     details = ""
@@ -52,25 +53,7 @@ def handle_uploading_file(f):
     value = float(text)
     print(f'value--> {value}')
 
-    total = calculate_tax(value)
-    return total
-
-
-def calculate_tax(income):
-    tax = 0
-    # tax20 = 7500  # (50000 - 12500) * 0.2
-    # tax40 = 40000  # (150000 - 50000) * 0.4
-    #
-    #
-    # if income < 12501:
-    #     tax = 0
-    # elif 12501 <= income < 50001:
-    #     tax = (income - 12500) * 0.2
-    # elif 50001 <= income < 150001:
-    #     tax = (income - 50000) * 0.4 + tax20
-    # elif income >= 150001:
-    #     tax = (income - 150000) * 0.45 + tax40 + tax20
-    return tax
+    return value
 
 
 def get_url_data(request):
@@ -93,8 +76,7 @@ def handle_url_data(url):
         value = float(text)
         print(f'value--> {value}')
 
-        total = calculate_tax(value)
-        return total
+        return value
 
 
 def get_cloud_data(request):
@@ -117,8 +99,7 @@ def handle_cloud_data(url):
         value = float(text)
         print(f'value--> {value}')
 
-        total = calculate_tax(value)
-        return total
+        return value
 
 
 def get_db_data(request):
@@ -149,6 +130,5 @@ def handle_db_data(request):
     if request.method == 'POST':
         value = float(request.POST['salary'])
         print(f'value--> {value}')
-        total = calculate_tax(value)
-        res = total
+        res = value
     return render(request, 'taxes/db_form.html', {'res': res})

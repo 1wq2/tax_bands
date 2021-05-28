@@ -34,6 +34,10 @@ Start Django server:
 
 ## Usage
 
+API's url is root `/`
+
+Payload example: 
+
 ```json
 {
   "salary": 52000,
