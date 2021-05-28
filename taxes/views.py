@@ -1,3 +1,5 @@
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
@@ -6,15 +8,31 @@ from django.urls import reverse
 from django.views.generic.edit import CreateView
 import urllib.request
 import sqlite3
-import json
-from .models import Salary, Upload
 from .forms import UploadFileForm, UrlForm, DataForm
+from .models import Tax
 
 
-class TaxesView(TemplateView):
-    model = Salary
-    template_name = 'taxes/base.html'
+class TaxView(APIView):
+    def post(self, request):
+        salary = self.request.data.get('salary')
+        detailed = self.request.data.get('detailed') is not None
+        if salary is None:
+            raise Exception('Salary is not provided')
+        try:
+            salary = float(salary)
+        except ValueError:
+            raise Exception('Salary is not a number')
+        if detailed:
+            details = {}
+            total = 0
+            for tax in Tax.objects.all():
+                curr_tax_value = tax.calculate_tax(salary)
+                total += curr_tax_value
+                details[f'{tax.begin} -> {tax.end or "inf"}'] = curr_tax_value
+            return Response({'total_tax': total, 'details': details})
+        else:
 
+            return Response({'total_tax': Tax.calculate_total_tax(salary)})
 
 def upload_file(request):
     res = 0
@@ -40,18 +58,18 @@ def handle_uploading_file(f):
 
 def calculate_tax(income):
     tax = 0
-    tax20 = 7500  # (50000 - 12500) * 0.2
-    tax40 = 40000  # (150000 - 50000) * 0.4
-
-
-    if income < 12501:
-        tax = 0
-    elif 12501 <= income < 50001:
-        tax = (income - 12500) * 0.2
-    elif 50001 <= income < 150001:
-        tax = (income - 50000) * 0.4 + tax20
-    elif income >= 150001:
-        tax = (income - 150000) * 0.45 + tax40 + tax20
+    # tax20 = 7500  # (50000 - 12500) * 0.2
+    # tax40 = 40000  # (150000 - 50000) * 0.4
+    #
+    #
+    # if income < 12501:
+    #     tax = 0
+    # elif 12501 <= income < 50001:
+    #     tax = (income - 12500) * 0.2
+    # elif 50001 <= income < 150001:
+    #     tax = (income - 50000) * 0.4 + tax20
+    # elif income >= 150001:
+    #     tax = (income - 150000) * 0.45 + tax40 + tax20
     return tax
 
 
