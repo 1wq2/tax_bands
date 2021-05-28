@@ -1,0 +1,28 @@
+{% extends 'taxes/base.html' %}
+
+{% block body %}
+
+    <div style="padding:40px;margin:40px;border:1px solid #ccc">
+
+        <h1>Database data upload</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit"></button>
+        </form>
+        <hr>
+        <h4>Database data: {{ data }}</h4>
+        <form action="{% url 'taxes:db_calc' %}" method="POST">
+            {% csrf_token %}
+            <div>
+                <label>Enter salary data: </label>
+                <input type="text" name="salary">
+            </div>
+            <div>
+                <button>Submit</button>
+            </div>
+        </form>
+        <h4>Income tax: {{ res }}</h4>
+    </div>
+
+{% endblock %}

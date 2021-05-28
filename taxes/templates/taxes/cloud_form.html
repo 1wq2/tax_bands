@@ -1,0 +1,16 @@
+{% extends 'taxes/base.html' %}
+
+{% block body %}
+
+    <div style="padding:40px;margin:40px;border:1px solid #ccc">
+        <h1>Cloud data</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit"></button>
+        </form>
+        <hr>
+        <h4>Income tax: {{ res }}</h4>
+    </div>
+
+{% endblock %}
